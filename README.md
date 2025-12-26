@@ -1,36 +1,44 @@
-# Perbandingan Algoritma Quickselect dan Algoritma Pengurutan dalam Mencari Nilai Tertentu pada Data
+# Analisis Komprehensif: Quickselect vs Quicksort (Rekursif & Iteratif)
 
 ### Tugas Besar Mata Kuliah Analisis Kompleksitas Algoritma (AKA)
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
 ![Matplotlib](https://img.shields.io/badge/Library-Matplotlib-orange.svg)
-![Status](https://img.shields.io/badge/Status-Completed-green.svg)
+![Type](https://img.shields.io/badge/Type-Algorithm%20Research-green.svg)
 
-Repository ini berisi implementasi kode, visualisasi, dan hasil analisis untuk Tugas Besar mata kuliah **Analisis Kompleksitas Algoritma**.
-
-Penelitian ini bertujuan untuk membandingkan efisiensi waktu eksekusi (*running time*) antara algoritma **Quickselect** (Seleksi Parsial) dengan algoritma **Sorting** (Pengurutan Penuh) dalam studi kasus pencarian nilai elemen ke-$k$ (seperti Median) pada kumpulan data besar.
+Repository ini berisi implementasi dan analisis perbandingan kinerja algoritma pencarian nilai ke-$k$ (k-th smallest element). Penelitian ini membandingkan **Quickselect** (Seleksi) melawan **Quicksort** (Pengurutan), dengan variasi implementasi secara **Rekursif** dan **Iteratif**.
 
 ## 👥 Anggota Tim
-| Nama | NIM |
-| :--- | :--- |
-| **Ananta Puti Maharani** | 103122400040 |
-| **Putri Naila Salsabila** | 103122400048 |
+| Nama | NIM | Peran |
+| :--- | :--- | :--- |
+| **Ananta Puti Maharani** | 103122400040 | Implementasi Kode & Analisis |
+| **Putri Naila Salsabila** | 103122400048 | Penyusunan Laporan & Visualisasi |
 
 ---
 
-## 📋 Fitur Program
-* **Real-Time Benchmarking:** Program memvisualisasikan grafik perbandingan kinerja secara langsung saat data diinput.
-* **Interactive CLI:** Pengguna dapat memasukkan berbagai ukuran data ($N$) melalui terminal untuk melihat respons algoritma.
-* **Analisis Otomatis:** Program menghitung selisih waktu dan memberikan kesimpulan algoritma mana yang lebih cepat pada setiap percobaan.
-* **Implementasi Algoritma:**
-    * **Quickselect:** $O(n)$ - Menggunakan pendekatan *Divide and Conquer* dengan pivot acak.
-    * **Sorting (Timsort):** $O(n \log n)$ - Menggunakan fungsi bawaan Python `.sort()`.
+## 🎯 Tujuan & Revisi
+Penelitian ini dikembangkan untuk menjawab tantangan berikut:
+1.  **Efisiensi Algoritma:** Membuktikan apakah $O(n)$ pada Quickselect lebih cepat dibanding $O(n \log n)$ pada Sorting dalam implementasi yang setara (Python manual).
+2.  **Rekursif vs Iteratif:** Menganalisis ketahanan memori dan kecepatan antara pendekatan *Divide and Conquer* klasik (Rekursif) dengan pendekatan berbasis *Stack/Loop* (Iteratif).
 
-## 🚀 Cara Menjalankan Program
+## 📋 Fitur Program
+Program ini memiliki fitur *All-in-One Benchmark* yang menguji 4 metode sekaligus dalam satu grafik:
+
+1.  **Quickselect Rekursif** ($O(n)$)
+2.  **Quickselect Iteratif** ($O(n)$)
+3.  **Quicksort Rekursif** ($O(n \log n)$)
+4.  **Quicksort Iteratif** ($O(n \log n)$)
+
+**Fitur Tambahan:**
+* **Live Multi-Line Plotting:** Menampilkan 4 garis grafik secara real-time.
+* **Manual Input:** Pengguna dapat menguji ketahanan algoritma pada berbagai ukuran $N$.
+* **Stack Overflow Prevention:** Implementasi iteratif untuk menangani dataset yang sangat besar yang biasanya menyebabkan *maximum recursion depth exceeded*.
+
+---
+
+## 🚀 Cara Menjalankan
 
 ### 1. Prasyarat
-Pastikan Python 3.x sudah terinstall. Program ini memerlukan library `matplotlib`.
-
-Install library dengan perintah:
+Pastikan Python 3.x dan library `matplotlib` sudah terinstall.
 ```bash
 pip install matplotlib
