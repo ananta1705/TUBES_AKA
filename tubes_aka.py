@@ -3,145 +3,220 @@ import time
 import sys
 import matplotlib.pyplot as plt
 
-# Meningkatkan batas rekursi
+# Meningkatkan batas rekursi untuk menangani metode rekursif pada data besar
 sys.setrecursionlimit(10**6)
 
 # ==========================================
-# BAGIAN 1: ALGORITMA (Quickselect & Sorting)
+# BAGIAN 1: FUNGSI PARTISI (Dipakai Semua Algoritma)
 # ==========================================
 def partition(arr, low, high):
-    pivot_index = random.randint(low, high)
-    arr[high], arr[pivot_index] = arr[pivot_index], arr[high]
+    """
+    Fungsi inti untuk membagi array menjadi dua bagian berdasarkan pivot.
+    Menggunakan Randomized Pivot untuk menghindari worst-case O(n^2).
+    """
+    rand_idx = random.randint(low, high)
+    arr[high], arr[rand_idx] = arr[rand_idx], arr[high]
+    
     pivot = arr[high]
     i = low - 1
+    
     for j in range(low, high):
         if arr[j] <= pivot:
             i += 1
             arr[i], arr[j] = arr[j], arr[i]
+            
     arr[i + 1], arr[high] = arr[high], arr[i + 1]
     return i + 1
 
-def quickselect(arr, low, high, k):
-    if low == high: return arr[low]
+# ==========================================
+# BAGIAN 2: IMPLEMENTASI ALGORITMA
+# ==========================================
+
+# --- A. QUICKSELECT ---
+
+def quickselect_recursive(arr, low, high, k):
+    """Quickselect versi Rekursif"""
+    if low == high:
+        return arr[low]
+    
     pivot_index = partition(arr, low, high)
-    if k == pivot_index: return arr[k]
-    elif k < pivot_index: return quickselect(arr, low, pivot_index - 1, k)
-    else: return quickselect(arr, pivot_index + 1, high, k)
+    
+    if k == pivot_index:
+        return arr[k]
+    elif k < pivot_index:
+        return quickselect_recursive(arr, low, pivot_index - 1, k)
+    else:
+        return quickselect_recursive(arr, pivot_index + 1, high, k)
 
-def run_quickselect(data_asli, k):
-    arr = data_asli[:]
-    return quickselect(arr, 0, len(arr) - 1, k - 1)
+def quickselect_iterative(arr, k):
+    """Quickselect versi Iteratif (Pakai While Loop)"""
+    low = 0
+    high = len(arr) - 1
+    while low <= high:
+        if low == high:
+            return arr[low]
+        
+        pivot_index = partition(arr, low, high)
+        
+        if k == pivot_index:
+            return arr[k]
+        elif k < pivot_index:
+            high = pivot_index - 1
+        else:
+            low = pivot_index + 1
+    return None
 
-def run_sorting(data_asli, k):
-    arr = data_asli[:]
-    arr.sort()
-    return arr[k - 1]
+# --- B. SORTING (QUICKSORT) ---
+
+def sorting_recursive(arr, low, high):
+    """Quicksort versi Rekursif"""
+    if low < high:
+        pi = partition(arr, low, high)
+        sorting_recursive(arr, low, pi - 1)
+        sorting_recursive(arr, pi + 1, high)
+
+def sorting_iterative(arr):
+    """Quicksort versi Iteratif (Pakai Stack Manual)"""
+    low = 0
+    high = len(arr) - 1
+    
+    # Buat stack manual
+    stack = [(low, high)]
+    
+    while stack:
+        l, h = stack.pop()
+        if l < h:
+            pi = partition(arr, l, h)
+            # Dorong bagian kiri dan kanan ke stack
+            # (Tips: Dorong yang lebih besar dulu agar stack tidak terlalu dalam)
+            if pi - 1 > l:
+                stack.append((l, pi - 1))
+            if pi + 1 < h:
+                stack.append((pi + 1, h))
 
 # ==========================================
-# BAGIAN 2: PROGRAM UTAMA (REAL-TIME GRAPH)
+# BAGIAN 3: WRAPPER FUNCTION (Untuk Benchmark)
+# ==========================================
+
+def run_qs_recursive(data_asli, k):
+    arr = data_asli[:]
+    return quickselect_recursive(arr, 0, len(arr)-1, k-1)
+
+def run_qs_iterative(data_asli, k):
+    arr = data_asli[:]
+    return quickselect_iterative(arr, k-1)
+
+def run_sort_recursive(data_asli, k):
+    arr = data_asli[:]
+    sorting_recursive(arr, 0, len(arr)-1)
+    return arr[k-1]
+
+def run_sort_iterative(data_asli, k):
+    arr = data_asli[:]
+    sorting_iterative(arr)
+    return arr[k-1]
+
+# ==========================================
+# BAGIAN 4: PROGRAM UTAMA
 # ==========================================
 def main():
-    print("\n" + "="*80)
-    print("PROGRAM PENELITIAN REAL-TIME".center(80))
-    print("QUICKSELECT VS SORTING".center(80))
-    print("="*80 + "\n")
-    print("Instruksi:")
-    print("1. Jendela Grafik akan muncul kosong.")
-    print("2. Masukkan nilai N di terminal, grafik akan otomatis ter-update.")
-    print("3. Ketik 'exit' untuk menutup program.\n")
-
+    print("\n" + "="*90)
+    print("PROGRAM PENELITIAN: PERBANDINGAN KOMPREHENSIF".center(90))
+    print("QUICKSELECT (Rec/Iter) vs SORTING (Rec/Iter)".center(90))
+    print("="*90 + "\n")
+    
     # --- SETUP GRAFIK INTERAKTIF ---
-    plt.ion()  # Aktifkan Interactive Mode
-    fig, ax = plt.subplots(figsize=(10, 6))
+    plt.ion()
+    fig, ax = plt.subplots(figsize=(12, 7))
     
-    # Inisialisasi garis kosong
-    line_qs, = ax.plot([], [], 'b-o', label='Quickselect (O(n))')
-    line_sort, = ax.plot([], [], 'r-x', label='Sorting (O(n log n))')
+    # Inisialisasi 4 Garis untuk 4 Metode
+    line_qs_rec, = ax.plot([], [], 'b-o', label='Quickselect Rekursif (O(n))', linewidth=2)
+    line_qs_iter, = ax.plot([], [], 'c--o', label='Quickselect Iteratif (O(n))')
+    line_sort_rec, = ax.plot([], [], 'r-x', label='Sorting Rekursif (O(n log n))', linewidth=2)
+    line_sort_iter, = ax.plot([], [], 'm--x', label='Sorting Iteratif (O(n log n))')
     
-    ax.set_title('Monitoring Real-Time: Quickselect vs Sorting')
+    ax.set_title('Perbandingan Kinerja: Rekursif vs Iteratif')
     ax.set_xlabel('Ukuran Data (N)')
     ax.set_ylabel('Waktu Eksekusi (Detik)')
     ax.legend()
     ax.grid(True)
     
-    # Tampilkan jendela grafik (kosong dulu)
     plt.show()
 
-    # Variabel penyimpanan data
-    history_n = []
-    history_qs = []
-    history_sort = []
+    # Penyimpanan Data
+    hist_n = []
+    hist_qs_rec, hist_qs_iter = [], []
+    hist_sort_rec, hist_sort_iter = [], []
 
     while True:
         try:
-            # Input user
-            user_input = input(">>> Masukkan Ukuran Data (N): ")
-            
-            if user_input.lower() in ['exit', 'keluar', 'stop', 'selesai']:
-                print("Program selesai. Grafik akhir ditampilkan.")
+            user_input = input(">>> Masukkan N (atau 'exit'): ")
+            if user_input.lower() in ['exit', 'selesai']:
+                print("Program selesai.")
                 break
             
             n = int(user_input)
-            if n <= 0:
-                print("   [!] Masukkan angka > 0")
-                continue
+            if n <= 0: continue
 
             # Generate Data
-            print(f"   -> Sedang generate {n} data acak...", end="\r")
+            print(f"   -> Generate {n} data...", end="\r")
             data = [random.randint(1, 10000000) for _ in range(n)]
             k = n // 2
             
-            # --- MULAI BENCHMARK ---
-            
-            # 1. Ukur Quickselect
+            # --- 1. Quickselect Rekursif ---
             start = time.perf_counter()
-            res_qs = run_quickselect(data, k)
-            t_qs = time.perf_counter() - start
-            
-            # 2. Ukur Sorting
+            run_qs_recursive(data, k)
+            t_qs_rec = time.perf_counter() - start
+
+            # --- 2. Quickselect Iteratif ---
             start = time.perf_counter()
-            res_sort = run_sorting(data, k)
-            t_sort = time.perf_counter() - start
-            
-            # Simpan data
-            history_n.append(n)
-            history_qs.append(t_qs)
-            history_sort.append(t_sort)
+            run_qs_iterative(data, k)
+            t_qs_iter = time.perf_counter() - start
 
-            # --- TAMPILKAN HASIL DETAIL DI TERMINAL ---
-            # Menghapus baris "sedang generate" sebelumnya dengan spasi kosong agar bersih
-            print(" " * 50, end="\r") 
-            
-            print(f"   [Hasil N={n}]")
-            print(f"   Quickselect (O(n))       : {t_qs:.6f} detik")
-            print(f"   Sorting (O(n log n))     : {t_sort:.6f} detik")
-            
-            # Logika Kesimpulan
-            if t_qs < t_sort:
-                diff = t_sort / t_qs
-                print(f"   => Quickselect {diff:.1f}x LEBIH CEPAT.")
-            else:
-                print(f"   => Sorting lebih cepat (efek overhead pada data kecil).")
-            
-            print("-" * 60) # Garis pemisah antar input
+            # --- 3. Sorting (Quicksort) Rekursif ---
+            start = time.perf_counter()
+            run_sort_recursive(data, k)
+            t_sort_rec = time.perf_counter() - start
 
-            # --- UPDATE GRAFIK SECARA REAL-TIME ---
-            combined = sorted(zip(history_n, history_qs, history_sort))
-            sorted_n, sorted_qs, sorted_sort = zip(*combined)
+            # --- 4. Sorting (Quicksort) Iteratif ---
+            start = time.perf_counter()
+            run_sort_iterative(data, k)
+            t_sort_iter = time.perf_counter() - start
 
-            line_qs.set_data(sorted_n, sorted_qs)
-            line_sort.set_data(sorted_n, sorted_sort)
+            # Simpan History
+            hist_n.append(n)
+            hist_qs_rec.append(t_qs_rec)
+            hist_qs_iter.append(t_qs_iter)
+            hist_sort_rec.append(t_sort_rec)
+            hist_sort_iter.append(t_sort_iter)
+
+            # Tampilkan Tabel Hasil
+            print(" " * 50, end="\r")
+            print(f"   [Hasil Pengujian N={n}]")
+            print(f"   1. Quickselect (Rekursif) : {t_qs_rec:.6f} s")
+            print(f"   2. Quickselect (Iteratif) : {t_qs_iter:.6f} s")
+            print(f"   3. Sorting   (Rekursif) : {t_sort_rec:.6f} s")
+            print(f"   4. Sorting   (Iteratif) : {t_sort_iter:.6f} s")
+            print("-" * 60)
+
+            # Update Grafik
+            combined = sorted(zip(hist_n, hist_qs_rec, hist_qs_iter, hist_sort_rec, hist_sort_iter))
+            sn, sqr, sqi, ssr, ssi = zip(*combined)
+
+            line_qs_rec.set_data(sn, sqr)
+            line_qs_iter.set_data(sn, sqi)
+            line_sort_rec.set_data(sn, ssr)
+            line_sort_iter.set_data(sn, ssi)
 
             ax.relim()
             ax.autoscale_view()
-
             plt.draw()
             plt.pause(0.1)
 
         except ValueError:
-            print("   [!] Input tidak valid.")
-        except Exception as e:
-            print(f"   [!] Error: {e}")
+            print("   [!] Input angka tidak valid.")
+        except RecursionError:
+             print("   [!] Error: Stack Overflow pada metode Rekursif (N terlalu besar).")
 
     plt.ioff()
     plt.show()
