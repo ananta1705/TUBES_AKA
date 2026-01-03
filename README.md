@@ -1,44 +1,43 @@
-# Analisis Komprehensif: Quickselect vs Quicksort (Rekursif & Iteratif)
 
-### Tugas Besar Mata Kuliah Analisis Kompleksitas Algoritma (AKA)
 
-![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
-![Matplotlib](https://img.shields.io/badge/Library-Matplotlib-orange.svg)
-![Type](https://img.shields.io/badge/Type-Algorithm%20Research-green.svg)
+# 📊 Analisis Algo: Quickselect vs Quicksort
 
-Repository ini berisi implementasi dan analisis perbandingan kinerja algoritma pencarian nilai ke-$k$ (k-th smallest element). Penelitian ini membandingkan **Quickselect** (Seleksi) melawan **Quicksort** (Pengurutan), dengan variasi implementasi secara **Rekursif** dan **Iteratif**.
+Repository ini berisi benchmark efisiensi antara algoritma **Seleksi ()** dan **Sorting ()** dengan pendekatan **Rekursif** vs **Iteratif**.
 
 ## 👥 Anggota Tim
+
 | Nama | NIM | Peran |
-| :--- | :--- | :--- |
-| **Ananta Puti Maharani** | 103122400040 | Implementasi Kode & Analisis |
-| **Putri Naila Salsabila** | 103122400048 | Penyusunan Laporan & Visualisasi |
+| --- | --- | --- |
+| **Ananta Puti Maharani** | 103122400040 | Coding & Analisis |
+| **Putri Naila Salsabila** | 103122400048 | Laporan & Visualisasi |
 
----
+## 🎯 Tujuan Utama
 
-## 🎯 Tujuan & Revisi
-Penelitian ini dikembangkan untuk menjawab tantangan berikut:
-1.  **Efisiensi Algoritma:** Membuktikan apakah $O(n)$ pada Quickselect lebih cepat dibanding $O(n \log n)$ pada Sorting dalam implementasi yang setara (Python manual).
-2.  **Rekursif vs Iteratif:** Menganalisis ketahanan memori dan kecepatan antara pendekatan *Divide and Conquer* klasik (Rekursif) dengan pendekatan berbasis *Stack/Loop* (Iteratif).
+1. **Time Complexity:** Membuktikan Quickselect () lebih cepat dari Quicksort () untuk mencari nilai ke-.
+2. **Memory Stability:** Mengatasi *Stack Overflow* pada data besar menggunakan metode Iteratif.
 
-## 📋 Fitur Program
-Program ini memiliki fitur *All-in-One Benchmark* yang menguji 4 metode sekaligus dalam satu grafik:
+## ⚙️ Fitur Program
 
-1.  **Quickselect Rekursif** ($O(n)$)
-2.  **Quickselect Iteratif** ($O(n)$)
-3.  **Quicksort Rekursif** ($O(n \log n)$)
-4.  **Quicksort Iteratif** ($O(n \log n)$)
-
-**Fitur Tambahan:**
-* **Live Multi-Line Plotting:** Menampilkan 4 garis grafik secara real-time.
-* **Manual Input:** Pengguna dapat menguji ketahanan algoritma pada berbagai ukuran $N$.
-* **Stack Overflow Prevention:** Implementasi iteratif untuk menangani dataset yang sangat besar yang biasanya menyebabkan *maximum recursion depth exceeded*.
-
----
+* **4-in-1 Benchmark:** Menguji 4 metode sekaligus (Quickselect Rec/Iter & Quicksort Rec/Iter).
+* **Live Graph:** Visualisasi perbandingan waktu secara *real-time*.
+* **Randomized Pivot:** Mencegah *worst-case*  pada data terurut.
+* **Robust:** Menangani input  besar tanpa crash (via Iteratif).
 
 ## 🚀 Cara Menjalankan
 
-### 1. Prasyarat
-Pastikan Python 3.x dan library `matplotlib` sudah terinstall.
+**1. Install Library**
+
 ```bash
 pip install matplotlib
+
+```
+
+**2. Jalankan Program**
+
+```bash
+python tubes_aka.py
+
+```
+
+**3. Input Data**
+Masukkan jumlah data () di terminal saat program berjalan (contoh: `1000`, `50000`).
